@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="card shadow" style="width: 24rem;">
+        <div class="card-body text-center">
+            <h1 class="card-title">Recipe Finder</h1>
+            <p class="card-text">Technologies:</p>
+            <ol class="list-group list-group-flush">
+                <li class="list-group-item">Frontend: HTML, CSS, JS</li>
+                <li class="list-group-item">API: Edamam Recipe Search</li>
+                <li class="list-group-item">Server: Python, Django</li>
+            </ol>
+            <p class="mt-3">Try it out <a href="{% url 'search_recipes' %}" class="btn btn-primary">Search</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

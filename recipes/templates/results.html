@@ -2,50 +2,61 @@
 
 {% block content %}
 <div class="container mt-4">
+
+    {# Include the search form #}
     {% include 'form.html' %}
 
-    <div id="results" class="row mt-5">
+    {# Recipe results section #}
+    <div id="results" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 mt-5">
+        {# Check if there are results #}
         {% if results.hits %}
+        {# Loop through each hit and display the recipe data in a card #}
         {% for hit in results.hits %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
+        <div class="col mb-4">
+            <div class="card h-100">
+                {# Display recipe image if available #}
                 {% if hit.recipe.image %}
                 <img src="{{ hit.recipe.image }}" class="card-img-top" alt="Recipe Image">
                 {% endif %}
+
                 <div class="card-body">
-                    <h5 class="card-title">{{ hit.recipe.label }}</h5>
+                    {# Recipe title, trimmed to the first 15 characters #}
+                    <h5 class="card-title">
+                        {{ hit.recipe.label|slice:":15" }}...
+                    </h5>
+
+                    {# Yield and calories #}
                     <p class="card-text"><strong>Yield:</strong> {{ hit.recipe.yield }}</p>
                     <p class="card-text"><strong>Calories:</strong> {{ hit.recipe.calories|floatformat:0 }}</p>
+
+                    {# Display diet labels as a comma-separated list #}
                     <p class="card-text"><strong>Diet Labels:</strong> {{ hit.recipe.dietLabels|join:", " }}</p>
-                    <p class="card-text"><strong>Health Labels:</strong> {{ hit.recipe.healthLabels|join:", " }}</p>
-                    {% if hit.recipe.url %}
-                    <p><a href="{{ hit.recipe.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Read More</a></p>
-                    {% endif %}
+
+                    {# Limit health labels to the first 3 for better readability #}
+                    <p class="card-text">
+                        <strong>Health Labels:</strong>
+                        {{ hit.recipe.healthLabels|slice:":3"|join:", " }}{% if hit.recipe.healthLabels|length > 3 %},
+                        ...{% endif %}
+                    </p>
+
+                    {# Link to the full recipe #}
+                    <div class="text-center">
+                        {% if hit.recipe.url %}
+                        <p><a href="{{ hit.recipe.url }}" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-secondary">Read More</a></p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
         {% else %}
+        {# If no results are found, display a message #}
         <div class="col-12">
             <p>Search for a recipe to get started.</p>
         </div>
         {% endif %}
     </div>
 </div>
-
-<script>
-    document.querySelector('form').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const query = document.querySelector('input[name="q"]').value;
-        fetch(`/search/?q=${query}`)
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const results = doc.querySelector('#results').innerHTML;
-                document.getElementById('results').innerHTML = results;
-            });
-    });
-</script>
 
 {% endblock %}

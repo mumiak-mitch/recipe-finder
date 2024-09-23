@@ -1,8 +1,12 @@
 import requests
+import environ
+
+# Initialize environment variables
+env = environ.Env()
 
 def fetch_recipes(query):
-    app_id = ''  
-    app_key = '' 
+    app_id = env('APP_ID')  
+    app_key = env('APP_KEY') 
     url = f'https://api.edamam.com/search?q={query}&app_id={app_id}&app_key={app_key}'
 
     try:

@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from .utils import fetch_recipes
 
+def home(request):
+    return render(request, 'index.html')
+
+
 def search_recipes(request):
     query = request.GET.get('q')
     if query:
